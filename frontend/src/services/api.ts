@@ -13,7 +13,7 @@ import {
   DynamicRecalculationData
 } from "../types";
 
-const API_BASE = "/api";
+const API_BASE = "https://antarctic-ai-navigation-1.onrender.com/api";
 
 export const api = {
   async getVessels(): Promise<Vessel[]> {
