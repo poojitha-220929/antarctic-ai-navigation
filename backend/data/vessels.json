@@ -1,0 +1,86 @@
+[
+  {
+    "id": "polarstern",
+    "name": "R/V Polarstern",
+    "operator": "Alfred Wegener Institute (Germany)",
+    "ice_class": "Polar Class 3 (PC3)",
+    "length_m": 118,
+    "beam_m": 25,
+    "max_speed_knots": 16.0,
+    "cruise_speed_knots": 12.0,
+    "fuel_capacity_liters": 2800000,
+    "current_fuel_liters": 2150000,
+    "avg_fuel_consumption_l_per_hr": 240,
+    "ice_fuel_multiplier": 1.95,
+    "current_location": {
+      "latitude": -60.85,
+      "longitude": -63.50,
+      "heading_degrees": 175,
+      "speed_knots": 11.4
+    },
+    "default_destination_id": "palmer"
+  },
+  {
+    "id": "attenborough",
+    "name": "R/V Sir David Attenborough",
+    "operator": "British Antarctic Survey (UK)",
+    "ice_class": "Polar Class 4 (PC4)",
+    "length_m": 128,
+    "beam_m": 24,
+    "max_speed_knots": 17.5,
+    "cruise_speed_knots": 13.0,
+    "fuel_capacity_liters": 3200000,
+    "current_fuel_liters": 2680000,
+    "avg_fuel_consumption_l_per_hr": 220,
+    "ice_fuel_multiplier": 1.85,
+    "current_location": {
+      "latitude": -61.20,
+      "longitude": -59.40,
+      "heading_degrees": 190,
+      "speed_knots": 12.2
+    },
+    "default_destination_id": "rothera"
+  },
+  {
+    "id": "gould",
+    "name": "R/V Laurence M. Gould",
+    "operator": "National Science Foundation (USA)",
+    "ice_class": "ABS A1 Icebreaker",
+    "length_m": 76,
+    "beam_m": 14,
+    "max_speed_knots": 12.5,
+    "cruise_speed_knots": 10.0,
+    "fuel_capacity_liters": 1400000,
+    "current_fuel_liters": 1020000,
+    "avg_fuel_consumption_l_per_hr": 175,
+    "ice_fuel_multiplier": 2.2,
+    "current_location": {
+      "latitude": -59.70,
+      "longitude": -62.10,
+      "heading_degrees": 168,
+      "speed_knots": 9.8
+    },
+    "default_destination_id": "palmer"
+  },
+  {
+    "id": "bharati_support",
+    "name": "R/V Bharati Polar Support",
+    "operator": "National Centre for Polar and Ocean Research (India)",
+    "ice_class": "Ice Class 1A Super",
+    "length_m": 105,
+    "beam_m": 20,
+    "max_speed_knots": 14.5,
+    "cruise_speed_knots": 11.5,
+    "fuel_capacity_liters": 2200000,
+    "current_fuel_liters": 1850000,
+    "avg_fuel_consumption_l_per_hr": 205,
+    "ice_fuel_multiplier": 2.05,
+    "current_location": {
+      "latitude": -61.50,
+      "longitude": -61.20,
+      "heading_degrees": 182,
+      "speed_knots": 10.8
+    },
+    "default_destination_id": "esperanza"
+  }
+]

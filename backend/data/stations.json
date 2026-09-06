@@ -1,0 +1,83 @@
+[
+  {
+    "id": "ushuaia",
+    "name": "Port of Ushuaia",
+    "country": "Argentina",
+    "type": "Port of Departure",
+    "latitude": -54.8072,
+    "longitude": -68.3044,
+    "description": "Gateway port to Antarctica on the Beagle Channel, Tierra del Fuego."
+  },
+  {
+    "id": "punta_arenas",
+    "name": "Punta Arenas",
+    "country": "Chile",
+    "type": "Port of Departure",
+    "latitude": -53.1638,
+    "longitude": -70.9171,
+    "description": "Major deepwater port on the Strait of Magellan serving Antarctic expeditions."
+  },
+  {
+    "id": "king_george",
+    "name": "King George Island Base Hub",
+    "country": "International (Chile/Russia/Uruguay)",
+    "type": "Research Station",
+    "latitude": -62.1974,
+    "longitude": -58.9632,
+    "description": "South Shetland Islands hub hosting Eduardo Frei, Bellingshausen, and Escudero stations."
+  },
+  {
+    "id": "esperanza",
+    "name": "Esperanza Base",
+    "country": "Argentina",
+    "type": "Research Station",
+    "latitude": -63.3978,
+    "longitude": -56.9989,
+    "description": "Located at Hope Bay, Trinity Peninsula. High historical ice drift zone."
+  },
+  {
+    "id": "marambio",
+    "name": "Marambio Base",
+    "country": "Argentina",
+    "type": "Research Station",
+    "latitude": -64.2411,
+    "longitude": -56.6267,
+    "description": "Seymour Island station on the northwestern Weddell Sea."
+  },
+  {
+    "id": "palmer",
+    "name": "Palmer Station",
+    "country": "United States",
+    "type": "Research Station",
+    "latitude": -64.7744,
+    "longitude": -64.0531,
+    "description": "Anvers Island marine biology research hub, protected natural harbor."
+  },
+  {
+    "id": "vernadsky",
+    "name": "Vernadsky Station",
+    "country": "Ukraine",
+    "type": "Research Station",
+    "latitude": -65.2458,
+    "longitude": -64.2575,
+    "description": "Marina Point on Galindez Island in the Argentine Islands archipelago."
+  },
+  {
+    "id": "rothera",
+    "name": "Rothera Research Station",
+    "country": "United Kingdom (BAS)",
+    "type": "Research Station",
+    "latitude": -67.5700,
+    "longitude": -68.1250,
+    "description": "Adelaide Island deep Antarctic research hub with crushed-rock runway and wharf."
+  },
+  {
+    "id": "san_martin",
+    "name": "San Martín Base",
+    "country": "Argentina",
+    "type": "Research Station",
+    "latitude": -68.1300,
+    "longitude": -67.1000,
+    "description": "Marguerite Bay deep peninsula base surrounded by perennial multi-year pack ice."
+  }
+]
