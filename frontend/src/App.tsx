@@ -338,6 +338,12 @@ export const App: React.FC = () => {
     }
   };
 
+  const handleToggleMode = async () => {
+    if (selectedVessel && destination) {
+      await loadVesselOperationalContext(selectedVessel, destination);
+    }
+  };
+
   const handleInspectAlert = (alert: Alert | null, navigateToMap: boolean = false) => {
     setInspectedAlert(alert);
     if (alert) {
@@ -393,6 +399,7 @@ export const App: React.FC = () => {
         onStartVoyage={handleStartVoyage}
         onPauseVoyage={handlePauseVoyage}
         onResetVoyage={handleResetVoyage}
+        onToggleMode={handleToggleMode}
       />
 
       {/* 2. Main Navigation Bar with the 7 Sections */}
