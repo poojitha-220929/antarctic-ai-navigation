@@ -22,11 +22,12 @@ const TIMEOUT_MS = 2500;
 export type NetworkModePreference = "ONLINE" | "OFFLINE";
 export type ActiveNetworkMode = "ONLINE (LOCAL API)" | "ONLINE (CLOUD)" | "OFFLINE (EDGE ENGINE)";
 
+// Default to OFFLINE to guarantee 0 internet consumption on startup
 let modePreference: NetworkModePreference =
-  (typeof window !== "undefined" && (localStorage.getItem("antarctic_network_mode") as NetworkModePreference)) || "ONLINE";
+  (typeof window !== "undefined" && (localStorage.getItem("antarctic_network_mode") as NetworkModePreference)) || "OFFLINE";
 
 let activeMode: ActiveNetworkMode =
-  modePreference === "OFFLINE" ? "OFFLINE (EDGE ENGINE)" : "ONLINE (LOCAL API)";
+  modePreference === "ONLINE" ? "ONLINE (LOCAL API)" : "OFFLINE (EDGE ENGINE)";
 
 type ModeListener = (active: ActiveNetworkMode, pref: NetworkModePreference) => void;
 const listeners: ModeListener[] = [];

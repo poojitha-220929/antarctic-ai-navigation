@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from "react";
 import L from "leaflet";
 import { Vessel, Iceberg, Route, Station, EnvironmentalCell, Alert } from "../types";
 import { Layers, ShieldAlert, Clock } from "lucide-react";
+import { getNetworkModePreference, subscribeNetworkMode } from "../services/api";
 
 function parseAlertCoordinates(
   locationStr: string,
@@ -109,7 +110,47 @@ export const AntarcticMap: React.FC<AntarcticMapProps> = ({
       attributionControl: false,
     });
 
-    // Ocean Bathymetry tile layer (Esri World Ocean Base - free, no API key required)
+    // 100% OFFLINE POLAR HYDROGRAPHIC BASEMAP (Consumes 0 bytes of internet)
+    const OfflinePolarCanvasBasemap = (L.GridLayer as any).extend({
+      createTile: function (coords: { x: number; y: number; z: number }) {
+        const tile = document.createElement("canvas");
+        tile.width = 256;
+        tile.height = 256;
+        const ctx = tile.getContext("2d");
+        if (!ctx) return tile;
+
+        // Polar ocean bathymetry gradient (deep sub-Antarctic waters)
+        const grad = ctx.createLinearGradient(0, 0, 256, 256);
+        grad.addColorStop(0, "#050c1b");
+        grad.addColorStop(1, "#08162f");
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, 256, 256);
+
+        // Nautical grid cell border
+        ctx.strokeStyle = "rgba(14, 165, 233, 0.08)";
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.strokeRect(0, 0, 256, 256);
+
+        // Coordinate crosshair graticules
+        ctx.strokeStyle = "rgba(51, 65, 85, 0.4)";
+        ctx.beginPath();
+        ctx.moveTo(128, 0);
+        ctx.lineTo(128, 256);
+        ctx.moveTo(0, 128);
+        ctx.lineTo(256, 128);
+        ctx.stroke();
+
+        return tile;
+      },
+    });
+
+    const offlineBasemap = new OfflinePolarCanvasBasemap({
+      attribution: "Offline Polar Hydrographic Grid • Zero Internet Data",
+      maxZoom: 16,
+    });
+
+    // Optional online layers (only queried if user explicitly selects them)
     const oceanBasemap = L.tileLayer(
       "https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}",
       {
@@ -118,7 +159,6 @@ export const AntarcticMap: React.FC<AntarcticMapProps> = ({
       }
     );
 
-    // Dark Ocean canvas fallback tile layer (Esri Dark Gray - free, no API key required)
     const darkBasemap = L.tileLayer(
       "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}",
       {
@@ -127,18 +167,127 @@ export const AntarcticMap: React.FC<AntarcticMapProps> = ({
       }
     );
 
-    // Add primary ocean basemap to map
-    oceanBasemap.addTo(map);
+    // Choose initial basemap based on saved network mode preference
+    const initialPref = getNetworkModePreference();
+    if (initialPref === "ONLINE") {
+      oceanBasemap.addTo(map);
+    } else {
+      offlineBasemap.addTo(map);
+    }
+
+    // Subscribe to mode changes → swap basemap dynamically
+    const unsubBasemap = subscribeNetworkMode((_active, pref) => {
+      if (pref === "ONLINE") {
+        if (map.hasLayer(offlineBasemap)) map.removeLayer(offlineBasemap);
+        if (map.hasLayer(darkBasemap)) map.removeLayer(darkBasemap);
+        if (!map.hasLayer(oceanBasemap)) oceanBasemap.addTo(map);
+      } else {
+        if (map.hasLayer(oceanBasemap)) map.removeLayer(oceanBasemap);
+        if (map.hasLayer(darkBasemap)) map.removeLayer(darkBasemap);
+        if (!map.hasLayer(offlineBasemap)) offlineBasemap.addTo(map);
+      }
+    });
 
     // Add Leaflet layer control for basemaps
     L.control.layers(
       {
-        "🌊 World Ocean Bathymetry": oceanBasemap,
-        "🌌 Dark Polar Ocean": darkBasemap,
+        "🛡️ Zero-Internet Offline Basemap": offlineBasemap,
+        "🌊 World Ocean Bathymetry (Online)": oceanBasemap,
+        "🌌 Dark Polar Ocean (Online)": darkBasemap,
       },
       undefined,
       { position: "topright" }
     ).addTo(map);
+
+    // Draw regional continental landmass vectors (Antarctic Peninsula & Cape Horn)
+    const landmassGroup = L.layerGroup().addTo(map);
+
+    // Antarctic Peninsula (Graham Land / Palmer Land)
+    L.polygon(
+      [
+        [-63.2, -56.8],
+        [-63.5, -57.8],
+        [-64.1, -59.0],
+        [-64.8, -61.2],
+        [-65.5, -63.5],
+        [-66.8, -65.8],
+        [-67.8, -67.2],
+        [-69.5, -68.0],
+        [-71.2, -67.8],
+        [-72.0, -64.5],
+        [-71.0, -61.0],
+        [-69.5, -62.0],
+        [-67.5, -63.0],
+        [-65.8, -60.5],
+        [-64.5, -58.5],
+        [-63.5, -56.5],
+      ],
+      {
+        fillColor: "#0f172a",
+        color: "#38bdf8",
+        weight: 1.5,
+        fillOpacity: 0.85,
+      }
+    ).bindTooltip("<span class='text-xs font-mono font-bold text-cyan-300'>Antarctic Peninsula (Graham Land)</span>", {
+      className: "bg-slate-900 text-white border border-slate-700",
+      sticky: true,
+    }).addTo(landmassGroup);
+
+    // South Shetland Islands (King George Island & Livingston Island)
+    L.polygon(
+      [
+        [-62.0, -58.8],
+        [-62.1, -57.9],
+        [-62.4, -58.3],
+        [-62.3, -59.1],
+      ],
+      {
+        fillColor: "#1e293b",
+        color: "#38bdf8",
+        weight: 1.5,
+        fillOpacity: 0.85,
+      }
+    ).bindTooltip("<span class='text-xs font-mono font-bold text-cyan-300'>King George Island</span>", {
+      className: "bg-slate-900 text-white border border-slate-700",
+      sticky: true,
+    }).addTo(landmassGroup);
+
+    L.polygon(
+      [
+        [-62.5, -60.8],
+        [-62.6, -59.8],
+        [-62.8, -60.5],
+        [-62.7, -61.3],
+      ],
+      {
+        fillColor: "#1e293b",
+        color: "#38bdf8",
+        weight: 1.5,
+        fillOpacity: 0.85,
+      }
+    ).bindTooltip("<span class='text-xs font-mono font-bold text-cyan-300'>Livingston Island</span>", {
+      className: "bg-slate-900 text-white border border-slate-700",
+      sticky: true,
+    }).addTo(landmassGroup);
+
+    // South America (Tierra del Fuego / Cape Horn)
+    L.polygon(
+      [
+        [-54.2, -69.2],
+        [-54.9, -65.8],
+        [-55.9, -67.3],
+        [-55.3, -69.8],
+      ],
+      {
+        fillColor: "#0f172a",
+        color: "#38bdf8",
+        weight: 1.5,
+        fillOpacity: 0.85,
+      }
+    ).bindTooltip("<span class='text-xs font-mono font-bold text-cyan-300'>Tierra del Fuego (Cape Horn)</span>", {
+      className: "bg-slate-900 text-white border border-slate-700",
+      sticky: true,
+    }).addTo(landmassGroup);
 
     L.control.zoom({ position: "topright" }).addTo(map);
 
@@ -157,6 +306,7 @@ export const AntarcticMap: React.FC<AntarcticMapProps> = ({
     mapInstanceRef.current = map;
 
     return () => {
+      unsubBasemap();
       map.remove();
       mapInstanceRef.current = null;
     };
